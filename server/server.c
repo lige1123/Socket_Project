@@ -34,6 +34,7 @@ void *work(void *arg) {
         chstr(msg);
         if (send(*fd, msg, strlen(msg), 0) < 0) {
             perror("error in send");
+            break;
         }
         printf("Success in ECHO !\n");
     }

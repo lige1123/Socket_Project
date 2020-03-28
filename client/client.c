@@ -25,6 +25,6 @@ int main(int argc, char **argv) {
     make_nonblock_ioctl(sockfd);
     recv(sockfd, msg, 512, 0);
     printf("recv : %s\n", msg);
-    close(fd);
+    close(sockfd);
     return 0;
 } 

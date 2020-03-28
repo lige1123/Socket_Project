@@ -15,4 +15,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+
 #endif

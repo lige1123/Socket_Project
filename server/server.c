@@ -7,7 +7,7 @@
 
 #include "head.h"
 #include "tcp_server.h"
-#define MAXCLIENT 512
+#define MAXCLIENT 10
 
 struct Client {
     int flag;
@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
         printf("New Client Login！\n");
         if ((sub = find_sub()) < 0) {
             fprintf(stderr, "Full!\n");
+            send(fd, "Max FULL!\n", sizeof("Max FULL!\n"), 0);
             close(fd);
             continue;
         }

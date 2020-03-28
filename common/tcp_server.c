@@ -18,7 +18,7 @@ int socket_create(int port) {
 
     struct linger m_linger;
     m_linger.l_onoff = 1;
-    m_linger.l_linger = 0;
+    m_linger.l_linger = 5;
     if (setsockopt(server_listen, SOL_SOCKET, SO_LINGER, &m_linger, (socklen_t)sizeof(m_linger)) < 0) {
         return -1;
     }

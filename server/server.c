@@ -7,7 +7,7 @@
 
 #include "head.h"
 #include "tcp_server.h"
-#define MAXCLIENT 10
+#define MAXCLIENT 150
 
 struct Client {
     int flag;

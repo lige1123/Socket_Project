@@ -57,6 +57,8 @@ int main() {
             memset(msg.message, 0, sizeof(msg.message));
             system("clear");
         }
+    } else {
+        wait(NULL);
     }
     return 0;
 }

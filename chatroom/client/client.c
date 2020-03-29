@@ -8,6 +8,7 @@
 #include "../common/chatroom.h"
 #include "../common/tcp_client.h"
 #include "../common/common.h"
+#include "../common/color.h"
 
 char *conf = "./client.conf";
 
@@ -24,11 +25,24 @@ int main() {
         return 1;
     }
     strcpy(msg.from, get_value(conf, "MY_NAME"));
+    printf("%s\n", msg.from);
     msg.flag = 2;
     if (chat_send(msg, sockfd) < 0) {
         return 2;
     }
     
+    struct RecvMsg rmsg = chat_recv(sockfd);
+    
+    if (rmsg.retval < 0) {
+        fprintf(stderr, "Error!\n");
+        return 1;
+    }
+
+    printf(GREEN"Server "NONE": %s", rmsg.msg.message);
+
+    if (rmsg.msg.flag == 3) 
+        close(sockfd);
+
     return 0;
 }
 

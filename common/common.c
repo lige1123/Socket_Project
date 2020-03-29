@@ -27,7 +27,7 @@ char *get_value(char *path, char *key) {
         else {
             if (line[strlen(key)] == '=') {
                 strncpy(conf_ans, sub + strlen(key) + 1, nrd - strlen(key) - 2);
-                *(conf_ans + nrd - strlen(key) - 1) = '\0';
+                *(conf_ans + nrd - strlen(key) - 2) = '\0';
                 break;
             }
         }

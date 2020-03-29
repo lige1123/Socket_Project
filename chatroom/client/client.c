@@ -11,9 +11,17 @@
 #include "../common/color.h"
 
 char *conf = "./client.conf";
+int sockfd;
+
+void *logout(int signalnum) {
+    close(sockfd);
+    exit(1);
+    printf("recv a signal");
+}
+
 
 int main() {
-    int port, sockfd;
+    int port;
     struct Msg msg;
     char ip[20] = {0};
     port = atoi(get_value(conf, "SERVER_PORT"));
@@ -40,14 +48,17 @@ int main() {
 
     printf(GREEN"Server "NONE": %s", rmsg.msg.message);
 
-    if (rmsg.msg.flag == 3) 
+    if (rmsg.msg.flag == 3) {
         close(sockfd);
+        return 1;
+    }
 
     pid_t pid;
     if ((pid = fork()) < 0){
         perror("fork");
     }
     if (pid == 0) {
+        signal(SIGINT, logout);
         system("clear");
         while (1) {
             printf(L_PINK"Please Input Message:"NONE"\n");
@@ -59,6 +70,7 @@ int main() {
         }
     } else {
         wait(NULL);
+        close(sockfd);
     }
     return 0;
 }

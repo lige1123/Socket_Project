@@ -43,6 +43,21 @@ int main() {
     if (rmsg.msg.flag == 3) 
         close(sockfd);
 
+    pid_t pid;
+    if ((pid = fork()) < 0){
+        perror("fork");
+    }
+    if (pid == 0) {
+        system("clear");
+        while (1) {
+            printf(L_PINK"Please Input Message:"NONE"\n");
+            scanf("%[^\n]s", msg.message);
+            getchar();
+            chat_send(msg, sockfd);
+            memset(msg.message, 0, sizeof(msg.message));
+            system("clear");
+        }
+    }
     return 0;
 }
 

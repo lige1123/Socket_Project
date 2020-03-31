@@ -58,7 +58,7 @@ int main() {
         perror("fork");
     }
     if (pid == 0) {
-        signal(SIGINT, logout);
+        //signal(SIGINT, logout);
         system("clear");
         while (1) {
             printf(L_PINK"Please Input Message:"NONE"\n");

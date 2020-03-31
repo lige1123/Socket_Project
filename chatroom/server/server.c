@@ -7,6 +7,7 @@
 
 #include "../common/common.h"
 #include "../common/tcp_server.h"
+#include "../common/tcp_client.h"
 #include "../common/chatroom.h"
 #include "../common/color.h"
 
@@ -15,6 +16,7 @@ struct User{
     int online;
     pthread_t tid;
     int fd;
+    char *IP;
 };
 
 
@@ -22,12 +24,14 @@ char *conf = "./server.conf";
 
 struct User *client;
 
+int port;
+
 
 void *work(void *arg){
     int sub = *(int *)arg;
     int client_fd = client[sub].fd;
     struct RecvMsg rmsg;
-    printf(GREEN"Login "NONE" : %s\n", client[sub].name);
+    printf(GREEN"Login "NONE" : %s IP = %s\n", client[sub].name, client[sub].IP);
     while (1) {
         rmsg = chat_recv(client_fd);
         if (rmsg.retval < 0) {
@@ -36,7 +40,18 @@ void *work(void *arg){
             client[sub].online = 0;
             return NULL;
         }
-        printf(BLUE"%s"NONE" : %s\n",rmsg.msg.from, rmsg.msg.message);
+
+        printf(BLUE"%s"NONE" : %s \n",rmsg.msg.from, rmsg.msg.message);
+       // int socket = INVALID_SOCKET;
+       // if (socket = (socket_connect(client[sub].name, port)) < 0) {
+       //     perror("socket_connect");
+       //     continue;
+      //  }
+       // strcpy(rmsg.msg.message, "You have Already Login System!");
+        for (int i = 0; i <= MAX_CLIENT; i++) {
+            if (client[i].online && client[i].fd != client_fd) continue;
+            chat_send(rmsg.msg, client[i].fd);
+        }
     }
     return NULL;
 }
@@ -61,7 +76,7 @@ bool check_online(char *name) {
 
 
 int main() {
-    int port, server_listen, fd;
+    int server_listen, fd;
     struct RecvMsg recvmsg;
     struct Msg msg;
     port = atoi(get_value(conf, "SERVER_PORT"));
@@ -71,8 +86,11 @@ int main() {
         perror("socket_create");
         return 1;
     }
-    while (1) { 
-        if ((fd = accept(server_listen, NULL, NULL)) < 0) {
+    while (1) {
+        
+        struct sockaddr_in addrClient;
+        socklen_t len = sizeof(struct sockaddr_in);
+        if ((fd = accept(server_listen, (struct sockaddr *)&addrClient, &len)) < 0) {
             perror("accept");
             continue;
         }
@@ -98,6 +116,9 @@ int main() {
         sub = find_sub();
         client[sub].online = 1;
         client[sub].fd =fd;
+        //client[sub].IP = ip;
+
+        client[sub].IP = inet_ntoa(addrClient.sin_addr);
         strcpy(client[sub].name, recvmsg.msg.from);
         pthread_create(&client[sub].tid, NULL, work, (void *)&sub);
     }
